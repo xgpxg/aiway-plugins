@@ -4,8 +4,8 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-plugin = { path = "../../lib/plugin" }
-protocol = { path = "../../lib/protocol" }
+plugin = { git = "https://github.com/xgpxg/aiway" }
+protocol = { git = "https://github.com/xgpxg/aiway" }
 
 [lib]
 name = "demo_plugin"

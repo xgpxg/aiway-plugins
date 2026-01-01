@@ -1,5 +1,5 @@
-use  plugin::serde_json::Value;
-use plugin::{Plugin, PluginError, PluginInfo, Version, async_trait, export, serde_json, plugin_version};
+use plugin::serde_json::Value;
+use plugin::{Plugin, PluginError, PluginInfo, Version, async_trait, export, plugin_version};
 use protocol::gateway::HttpContext;
 
 // 示例插件
