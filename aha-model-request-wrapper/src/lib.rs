@@ -1,7 +1,7 @@
 use plugin::{
     Plugin, PluginError, PluginInfo, Version, async_trait, export, plugin_version, serde_json,
 };
-use protocol::gateway::HttpContext;
+use plugin::protocol::gateway::HttpContext;
 use serde_json::Value;
 
 /// # Aha模型请求参数转换

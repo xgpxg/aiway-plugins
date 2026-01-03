@@ -2,11 +2,11 @@ use plugin::serde_json::json;
 use plugin::{
     Plugin, PluginError, PluginInfo, Version, async_trait, export, plugin_version, serde_json,
 };
-use protocol::gateway::HttpContext;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::{LazyLock, Mutex};
+use plugin::protocol::gateway::HttpContext;
 
 /// # 路径重写插件
 ///
