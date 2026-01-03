@@ -5,7 +5,6 @@ edition = "2024"
 
 [dependencies]
 plugin = { git = "https://github.com/xgpxg/aiway" }
-protocol = { git = "https://github.com/xgpxg/aiway" }
 serde_json = "1.0"
 
 
