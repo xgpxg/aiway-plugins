@@ -70,7 +70,7 @@ impl Plugin for EchoPlugin {
         println!("Status: {:?}", context.response.get_status());
 
         // 输出响应头
-        println!("Response Headers:");
+        println!("Headers:");
         for header in &context.response.headers {
             println!("  {}: {}", header.key(), header.value());
         }
@@ -79,19 +79,25 @@ impl Plugin for EchoPlugin {
         if let Some(body) = context.response.get_body() {
             match std::str::from_utf8(body) {
                 Ok(body_str) => {
-                    println!("Response Body (text): {}", body_str);
+                    println!("Body (text): {}", body_str);
                 }
                 Err(_) => {
-                    println!("Response Body (binary): {} bytes", body.len());
+                    println!("Body (binary): {} bytes", body.len());
                 }
             }
         } else {
-            println!("Response Body: None");
+            println!("Body: None");
         }
 
-        if let Some(_) = context.response.stream_body.get() {
-            println!("Stream Body: Stream<Vec<u8>>");
+        if let Some(stream_body) = context.response.stream_body.get() {
+            if let Some(_) = stream_body.as_ref() {
+                println!("Stream Body: Stream<Vec<u8>>");
+            } else {
+                println!("Stream Body: None");
+            }
         }
+
+        println!("\n=== Plugin Config ===");
 
         println!("Config: {:?}", config);
 
