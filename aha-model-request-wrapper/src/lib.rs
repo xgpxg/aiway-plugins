@@ -1,7 +1,7 @@
+use plugin::protocol::gateway::HttpContext;
 use plugin::{
     Plugin, PluginError, PluginInfo, Version, async_trait, export, plugin_version, serde_json,
 };
-use plugin::protocol::gateway::HttpContext;
 use serde_json::Value;
 
 /// # Aha模型请求参数转换
@@ -48,7 +48,7 @@ impl Plugin for AhaModelRequestWrapperPlugin {
             .ok_or(PluginError::ExecuteError(
                 "voice_text field is not found".to_string(),
             ))?;
-        Ok(serde_json::json!(
+        let result = serde_json::json!(
             {
                 "model": model,
                 "messages": [
@@ -72,7 +72,13 @@ impl Plugin for AhaModelRequestWrapperPlugin {
                     "prompt_text": voice_text
                 }
             }
-        ))
+        );
+
+        context
+            .request
+            .set_body(serde_json::to_vec(&result).unwrap());
+
+        Ok(Default::default())
     }
 }
 

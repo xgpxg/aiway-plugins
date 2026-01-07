@@ -1,0 +1,12 @@
+[package]
+name = "bailian-model-request-wrapper"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+plugin = { git = "https://github.com/xgpxg/aiway", features = ["model"] }
+
+[lib]
+name = "bailian_model_request_wrapper"
+crate-type = ["cdylib"]
+path = "src/lib.rs"
