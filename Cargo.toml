@@ -1,3 +1,12 @@
 [workspace]
 resolver = "3"
-members = ["demo", "echo", "rewrite-path", "aha-model-request-wrapper", "sensitive-word-filter", "bailian-model-request-wrapper", "bailian-model-response-wrapper"]
+members = [
+    "demo",
+    "echo",
+    "rewrite-path",
+    "aha-model-request-wrapper",
+    "aha-model-response-wrapper",
+    "sensitive-word-filter",
+    "bailian-model-request-wrapper",
+    "bailian-model-response-wrapper"
+]

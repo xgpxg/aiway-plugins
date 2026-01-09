@@ -76,7 +76,7 @@ impl Plugin for AhaModelRequestWrapperPlugin {
 
         context
             .request
-            .set_body(serde_json::to_vec(&result).unwrap());
+            .set_body(serde_json::to_vec(&result).unwrap().into());
 
         Ok(Default::default())
     }

@@ -11,6 +11,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "aha-model-response-wrapper"
+version = "0.1.0"
+dependencies = [
+ "base64",
+ "plugin",
+ "serde_json",
+]
+
+[[package]]
 name = "aho-corasick"
 version = "1.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -753,7 +762,7 @@ checksum = "8b870d8c151b6f2fb93e84a13146138f05d02ed11c7e7c54f8826aaaf7c9f184"
 [[package]]
 name = "plugin"
 version = "0.1.0"
-source = "git+https://github.com/xgpxg/aiway#6713afdcc034a63dc72143e1d233f297a90e4da4"
+source = "git+https://github.com/xgpxg/aiway#3cbd1405959e7b8e6271de228d5c01c241ba1f56"
 dependencies = [
  "async-trait",
  "dashmap",
@@ -796,8 +805,9 @@ dependencies = [
 [[package]]
 name = "protocol"
 version = "0.1.0"
-source = "git+https://github.com/xgpxg/aiway#6713afdcc034a63dc72143e1d233f297a90e4da4"
+source = "git+https://github.com/xgpxg/aiway#3cbd1405959e7b8e6271de228d5c01c241ba1f56"
 dependencies = [
+ "bytes",
  "dashmap",
  "serde",
  "serde_json",
