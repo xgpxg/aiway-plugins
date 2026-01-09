@@ -1,0 +1,14 @@
+[package]
+name = "header-operator"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+plugin = { git = "https://github.com/xgpxg/aiway" }
+serde_json = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+
+[lib]
+name = "header_operator_plugin"
+crate-type = ["cdylib"]
+path = "src/lib.rs"

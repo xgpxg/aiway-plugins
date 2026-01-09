@@ -8,5 +8,6 @@ members = [
     "aha-model-response-wrapper",
     "sensitive-word-filter",
     "bailian-model-request-wrapper",
-    "bailian-model-response-wrapper"
+    "bailian-model-response-wrapper",
+    "header-operator"
 ]
