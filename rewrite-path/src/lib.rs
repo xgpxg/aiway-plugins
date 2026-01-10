@@ -86,7 +86,7 @@ impl Plugin for RewritePathPlugin {
             path
         };
 
-        context.request.set_routing_path(rewritten_path);
+        context.request.set_path(&rewritten_path);
         Ok(Default::default())
     }
 }

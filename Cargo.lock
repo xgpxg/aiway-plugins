@@ -771,7 +771,7 @@ checksum = "8b870d8c151b6f2fb93e84a13146138f05d02ed11c7e7c54f8826aaaf7c9f184"
 [[package]]
 name = "plugin"
 version = "0.1.0"
-source = "git+https://github.com/xgpxg/aiway#3cbd1405959e7b8e6271de228d5c01c241ba1f56"
+source = "git+https://github.com/xgpxg/aiway#f6db8b0f922053eb9f5af0f922c1c9c6540e0579"
 dependencies = [
  "async-trait",
  "dashmap",
@@ -814,7 +814,7 @@ dependencies = [
 [[package]]
 name = "protocol"
 version = "0.1.0"
-source = "git+https://github.com/xgpxg/aiway#3cbd1405959e7b8e6271de228d5c01c241ba1f56"
+source = "git+https://github.com/xgpxg/aiway#f6db8b0f922053eb9f5af0f922c1c9c6540e0579"
 dependencies = [
  "bytes",
  "dashmap",
