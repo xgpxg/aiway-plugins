@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-plugin = { git = "https://github.com/xgpxg/aiway" }
+aiway-plugin = "0.1.0"
 serde_json = "1.0"
 
 

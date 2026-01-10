@@ -1,6 +1,6 @@
-use plugin::protocol::gateway::HttpContext;
-use plugin::serde_json::Value;
-use plugin::{Plugin, PluginError, PluginInfo, Version, async_trait, export, plugin_version};
+use aiway_plugin::protocol::gateway::HttpContext;
+use aiway_plugin::serde_json::Value;
+use aiway_plugin::{Plugin, PluginError, PluginInfo, Version, async_trait, export, plugin_version};
 use serde::{Deserialize, Serialize};
 
 /// Header操作插件

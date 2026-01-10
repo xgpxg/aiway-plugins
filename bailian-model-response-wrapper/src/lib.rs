@@ -1,7 +1,7 @@
-use plugin::protocol::gateway::HttpContext;
-use plugin::protocol::model::Provider;
-use plugin::serde_json::{Value, json};
-use plugin::{
+use aiway_plugin::protocol::gateway::HttpContext;
+use aiway_plugin::protocol::model::Provider;
+use aiway_plugin::serde_json::{Value, json};
+use aiway_plugin::{
     Plugin, PluginError, PluginInfo, Version, async_trait, export, plugin_version, serde_json,
 };
 
@@ -23,7 +23,7 @@ impl Plugin for BaiLianModelResponseWrapper {
         PluginInfo {
             version: plugin_version!(),
             default_config: Default::default(),
-            description: "阿里百炼平台模型接口适配".to_string(),
+            description: "阿里百炼平台模型接口响应适配".to_string(),
         }
     }
 

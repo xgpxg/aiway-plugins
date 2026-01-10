@@ -1,12 +1,12 @@
-use plugin::serde_json::json;
-use plugin::{
+use aiway_plugin::serde_json::json;
+use aiway_plugin::{
     Plugin, PluginError, PluginInfo, Version, async_trait, export, plugin_version, serde_json,
 };
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::{LazyLock, Mutex};
-use plugin::protocol::gateway::HttpContext;
+use aiway_plugin::protocol::gateway::HttpContext;
 
 /// # 路径重写插件
 ///
