@@ -16,7 +16,7 @@ impl BaiLianModelResponseWrapper {
 #[async_trait]
 impl Plugin for BaiLianModelResponseWrapper {
     fn name(&self) -> &'static str {
-        "BaiLianModelResponseWrapper"
+        "BaiLianMO"
     }
 
     fn info(&self) -> PluginInfo {
@@ -63,10 +63,15 @@ impl Plugin for BaiLianModelResponseWrapper {
                         }
                     ],
                 });
-                Ok(result)
+                context.request.set_body(
+                    serde_json::to_vec(&result)
+                        .map_err(|e| PluginError::ExecuteError(e.to_string()))?
+                        .into(),
+                );
             }
-            _ => Ok(body),
+            _ => {}
         }
+        Ok(Default::default())
     }
 }
 

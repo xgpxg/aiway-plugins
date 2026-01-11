@@ -20,7 +20,7 @@ impl AhaModelRequestWrapperPlugin {
 #[async_trait]
 impl Plugin for AhaModelRequestWrapperPlugin {
     fn name(&self) -> &'static str {
-        "AhaModelRequestWrapper"
+        "aha-mi"
     }
 
     fn info(&self) -> PluginInfo {

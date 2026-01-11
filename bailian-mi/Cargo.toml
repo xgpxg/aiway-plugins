@@ -1,5 +1,5 @@
 [package]
-name = "bailian-model-response-wrapper"
+name = "bailian-mi"
 version = "0.1.0"
 edition = "2024"
 
@@ -7,6 +7,6 @@ edition = "2024"
 aiway-plugin = { version = "0.1.0", features = ["model"] }
 
 [lib]
-name = "bailian_model_response_wrapper"
+name = "bailian_mi"
 crate-type = ["cdylib"]
 path = "src/lib.rs"

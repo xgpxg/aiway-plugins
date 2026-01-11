@@ -1,9 +1,9 @@
 use aiway_plugin::protocol::gateway::HttpContext;
+use aiway_plugin::protocol::model::Provider;
 use aiway_plugin::serde_json::{Value, json};
 use aiway_plugin::{
     Plugin, PluginError, PluginInfo, Version, async_trait, export, plugin_version, serde_json,
 };
-use aiway_plugin::protocol::model::Provider;
 
 pub struct BaiLianModelRequestWrapper;
 
@@ -16,7 +16,7 @@ impl BaiLianModelRequestWrapper {
 #[async_trait]
 impl Plugin for BaiLianModelRequestWrapper {
     fn name(&self) -> &'static str {
-        "BaiLianModelRequestWrapper"
+        "BaiLianMI"
     }
 
     fn info(&self) -> PluginInfo {
@@ -29,9 +29,14 @@ impl Plugin for BaiLianModelRequestWrapper {
 
     // 实现插件逻辑
     async fn execute(&self, context: &HttpContext, _config: &Value) -> Result<Value, PluginError> {
-        let provider = context.request.get_state::<Provider>("provider").map_err(|e| PluginError::ExecuteError(e.to_string()))?;
-        if provider.is_none(){
-            return Err(PluginError::ExecuteError("provider is not found".to_string()));
+        let provider = context
+            .request
+            .get_state::<Provider>("provider")
+            .map_err(|e| PluginError::ExecuteError(e.to_string()))?;
+        if provider.is_none() {
+            return Err(PluginError::ExecuteError(
+                "provider is not found".to_string(),
+            ));
         }
         let provider = provider.unwrap();
 
@@ -61,10 +66,16 @@ impl Plugin for BaiLianModelRequestWrapper {
                         ]
                     },
                 });
-                Ok(result)
+
+                context.request.set_body(
+                    serde_json::to_vec(&result)
+                        .map_err(|e| PluginError::ExecuteError(e.to_string()))?
+                        .into(),
+                );
             }
-            _ => Ok(body),
+            _ => {}
         }
+        Ok(Default::default())
     }
 }
 

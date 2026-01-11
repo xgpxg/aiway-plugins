@@ -22,7 +22,7 @@ impl AhaModelResponseWrapperPlugin {
 #[async_trait]
 impl Plugin for AhaModelResponseWrapperPlugin {
     fn name(&self) -> &'static str {
-        "AhaModelResponseWrapperPlugin"
+        "aha-mo"
     }
 
     fn info(&self) -> PluginInfo {

@@ -1,3 +1,4 @@
+use aiway_plugin::protocol::gateway::HttpContext;
 use aiway_plugin::serde_json::json;
 use aiway_plugin::{
     Plugin, PluginError, PluginInfo, Version, async_trait, export, plugin_version, serde_json,
@@ -6,7 +7,6 @@ use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::{LazyLock, Mutex};
-use aiway_plugin::protocol::gateway::HttpContext;
 
 /// # 路径重写插件
 ///
@@ -42,7 +42,7 @@ static REGEX_CACHE: LazyLock<Mutex<HashMap<String, Regex>>> =
 #[async_trait]
 impl Plugin for RewritePathPlugin {
     fn name(&self) -> &'static str {
-        "RewritePath"
+        "rewrite-path"
     }
 
     fn info(&self) -> PluginInfo {

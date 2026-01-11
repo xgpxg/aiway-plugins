@@ -10,6 +10,6 @@ regex = "1.11"
 
 
 [lib]
-name = "rewrite_path_plugin"
+name = "rewrite_path"
 crate-type = ["cdylib"]
 path = "src/lib.rs"

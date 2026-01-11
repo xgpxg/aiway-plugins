@@ -59,7 +59,7 @@ impl Default for HeaderConfig {
 #[async_trait]
 impl Plugin for HeaderOperatorPlugin {
     fn name(&self) -> &'static str {
-        "HeaderOperator"
+        "header-operator"
     }
 
     fn info(&self) -> PluginInfo {

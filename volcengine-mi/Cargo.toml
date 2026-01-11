@@ -1,5 +1,5 @@
 [package]
-name = "bailian-model-request-wrapper"
+name = "volcengine-mi"
 version = "0.1.0"
 edition = "2024"
 
@@ -7,6 +7,6 @@ edition = "2024"
 aiway-plugin = { version = "0.1.0", features = ["model"] }
 
 [lib]
-name = "bailian_model_request_wrapper"
+name = "volcengine_mi"
 crate-type = ["cdylib"]
 path = "src/lib.rs"

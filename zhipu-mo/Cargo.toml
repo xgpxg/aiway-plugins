@@ -1,0 +1,13 @@
+[package]
+name = "zhipu-mo"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+aiway-plugin = { version = "0.1.0", features = ["model"] }
+reqwest = { version = "0.13", default-features = false, features = ["multipart", "blocking"] }
+
+[lib]
+name = "zhipu_mo"
+crate-type = ["cdylib"]
+path = "src/lib.rs"

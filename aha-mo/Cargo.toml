@@ -1,14 +1,14 @@
 [package]
-name = "aha-model-request-wrapper"
+name = "aha-mo"
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
 aiway-plugin = "0.1.0"
 serde_json = "1.0"
-
+base64 = "0.22"
 
 [lib]
-name = "aha_model_request_wrapper_plugin"
+name = "aha_mo"
 crate-type = ["cdylib"]
 path = "src/lib.rs"
