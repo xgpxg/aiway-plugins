@@ -1,4 +1,4 @@
-use aiway_plugin::protocol::gateway::HttpContext;
+use aiway_plugin::protocol::context::HttpContext;
 use aiway_plugin::{
     Plugin, PluginError, PluginInfo, Version, async_trait, export, plugin_version, serde_json,
 };

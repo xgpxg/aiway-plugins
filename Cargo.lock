@@ -42,9 +42,9 @@ dependencies = [
 
 [[package]]
 name = "aiway-plugin"
-version = "0.1.2-alpha.2"
+version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a8ab6baa5789cfa4b427849757526af5a6d1e7e9277ba9de7450a18118394bd7"
+checksum = "05d252b1cf9c8d7cc00a4c2fbcd7e429f9c91aace456ea42d289ccd253ed75f2"
 dependencies = [
  "aiway-model-protocol",
  "aiway-protocol",
@@ -60,9 +60,9 @@ dependencies = [
 
 [[package]]
 name = "aiway-protocol"
-version = "0.1.2-alpha.2"
+version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e9f171c98ba8d3ce5f5c4017c26ac57429cef344cf9e81b58c90358c2c5cab7f"
+checksum = "1f1add209e79df56903111fc570936207e2d2559abd625c60506db1c87fdb76e"
 dependencies = [
  "bytes",
  "dashmap",
