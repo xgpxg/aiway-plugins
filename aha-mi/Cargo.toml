@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-aiway-plugin = "0.1.0"
+aiway-plugin = { version = "0.1.2-alpha.2", features = ["model"] }
 serde_json = "1.0"
 
 

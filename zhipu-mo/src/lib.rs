@@ -1,5 +1,4 @@
 use aiway_plugin::protocol::gateway::HttpContext;
-use aiway_plugin::protocol::model::Provider;
 use aiway_plugin::serde_json::Value;
 use aiway_plugin::{
     Plugin, PluginError, PluginInfo, Version, async_trait, export, plugin_version, serde_json,
@@ -34,10 +33,7 @@ impl Plugin for ZhiPuMO {
             return Ok(Default::default());
         }
 
-        let provider = context
-            .request
-            .get_state::<Provider>("provider")
-            .map_err(|e| PluginError::ExecuteError(e.to_string()))?;
+        let provider = context.inner_state.get_model_provider();
 
         if provider.is_none() {
             return Err(PluginError::ExecuteError(
