@@ -1,5 +1,6 @@
-use aiway_plugin::protocol::context::HttpContext;
-use aiway_plugin::serde_json::json;
+use aiway_plugin::protocol::context::http::request;
+use aiway_plugin::protocol::context::{HttpContext, RequestExt};
+use aiway_plugin::serde_json::{Value, json};
 use aiway_plugin::{
     Plugin, PluginError, PluginInfo, Version, async_trait, export, plugin_version, serde_json,
 };
@@ -8,18 +9,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::{LazyLock, Mutex};
 
-/// # 路径重写插件
-///
-/// 重写网关收到的路径，将重写后的路径转发到目标服务。
-///
-/// # 插件参数示例
-/// ```json
-/// {
-///     "pattern": "/api/*",
-///     "replacement": "/$1"
-/// }
-/// ```
-///
+/// 路径重写插件
 pub struct RewritePathPlugin;
 
 impl RewritePathPlugin {
@@ -56,16 +46,18 @@ impl Plugin for RewritePathPlugin {
         }
     }
 
-    async fn execute(
+    // 实现插件逻辑
+    async fn on_request(
         &self,
-        context: &HttpContext,
-        config: &serde_json::Value,
-    ) -> Result<serde_json::Value, PluginError> {
+        config: &Value,
+        head: &mut request::Parts,
+        _: &mut HttpContext,
+    ) -> Result<(), PluginError> {
         let rule: RewriteRule = serde_json::from_value(config.clone()).map_err(|e| {
             PluginError::ExecuteError(format!("Failed to parse rewrite rules: {}", e))
         })?;
 
-        let path = context.request.get_path();
+        let path = head.get_path();
 
         let regex = {
             let mut cache = REGEX_CACHE.lock().unwrap();
@@ -86,7 +78,7 @@ impl Plugin for RewritePathPlugin {
             path
         };
 
-        context.request.set_path(&rewritten_path);
+        head.set_path(&rewritten_path);
         Ok(Default::default())
     }
 }

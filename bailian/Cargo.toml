@@ -1,12 +1,12 @@
 [package]
-name = "bailian-mi"
+name = "bailian"
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-aiway-plugin = { version = "0.1.2", features = ["model"] }
+aiway-plugin = { version = "0.2.1", features = ["model"] }
 
 [lib]
-name = "bailian_mi"
+name = "bailian"
 crate-type = ["cdylib"]
 path = "src/lib.rs"

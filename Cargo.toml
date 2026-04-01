@@ -7,11 +7,10 @@ members = [
     "aha-mi",
     "aha-mo",
     "sensitive-word-filter",
-    "bailian-mi",
-    "bailian-mo",
+    "bailian",
     "header-operator",
     "volcengine-mi",
     "volcengine-mo",
     "zhipu-mi",
-    "zhipu-mo",
+    "zhipu-mo"
 ]

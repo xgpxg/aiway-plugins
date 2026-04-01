@@ -1,6 +1,9 @@
+use aiway_plugin::protocol::context::http::{request, response};
 use aiway_plugin::protocol::context::HttpContext;
 use aiway_plugin::serde_json::Value;
-use aiway_plugin::{Plugin, PluginError, PluginInfo, Version, async_trait, export, plugin_version};
+use aiway_plugin::{
+    Plugin, PluginError, PluginInfo, Version, async_trait, export, plugin_version,
+};
 
 /// Echo插件
 ///
@@ -28,81 +31,53 @@ impl Plugin for EchoPlugin {
     }
 
     // 实现插件逻辑
-    async fn execute(&self, context: &HttpContext, config: &Value) -> Result<Value, PluginError> {
-        // 输出请求上下文
-        println!("=== Request Context ===");
-        println!("Request ID: {}", context.request.request_id);
-        println!(
-            "Method: {}",
-            context.request.get_method().unwrap_or("UNKNOWN")
-        );
-        println!("Path: {}", context.request.get_path());
-        println!("Host: {}", context.request.host);
+    async fn on_request(
+        &self,
+        _config: &Value,
+        head: &mut request::Parts,
+        ctx: &mut HttpContext,
+    ) -> Result<(), PluginError> {
+        println!("========== 请求信息 ==========");
+        println!("URI: {}", head.uri);
+        println!("方法：{}", head.method);
 
-        // 输出请求头
-        println!("Headers:");
-        for header in &context.request.headers {
-            println!("  {}: {}", header.key(), header.value());
+        // 打印请求头
+        println!("\n--- 请求头 ---");
+        for (key, value) in &head.headers {
+            println!("{}: {:?}", key, value);
+        }
+        
+        // 尝试从 context 中获取更多信息
+        println!("\n--- Context 信息 ---");
+        println!("请求 ID: {:?}", ctx.request_id());
+        println!("上下文：{:?}", ctx);
+        
+        println!("============================\n");
+        Ok(Default::default())
+    }
+
+    async fn on_response(
+        &self,
+        _config: &Value,
+        head: &mut response::Parts,
+        ctx: &mut HttpContext,
+    ) -> Result<(), PluginError> {
+        println!("========== 响应信息 ==========");
+        println!("状态码：{}", head.status);
+        println!("版本：{:?}", head.version);
+        
+        // 打印响应头
+        println!("\n--- 响应头 ---");
+        for (key, value) in &head.headers {
+            println!("{}: {:?}", key, value);
         }
 
-        // 输出查询参数
-        println!("Query Params:");
-        for param in &context.request.query {
-            println!("  {}: {}", param.key(), param.value());
-        }
-
-        // 输出请求体
-        if let Some(body) = context.request.get_body() {
-            match std::str::from_utf8(body) {
-                Ok(body_str) => {
-                    println!("Body (text): {}", body_str);
-                }
-                Err(_) => {
-                    println!("Body (binary): {} bytes", body.len());
-                }
-            }
-        } else {
-            println!("Body: None");
-        }
-
-        // 输出响应上下文
-        println!("\n=== Response Context ===");
-        println!("Status: {:?}", context.response.get_status());
-
-        // 输出响应头
-        println!("Headers:");
-        for header in &context.response.headers {
-            println!("  {}: {}", header.key(), header.value());
-        }
-
-        // 输出响应体
-        if let Some(body) = context.response.get_body() {
-            match std::str::from_utf8(body) {
-                Ok(body_str) => {
-                    println!("Body (text): {}", body_str);
-                }
-                Err(_) => {
-                    println!("Body (binary): {} bytes", body.len());
-                }
-            }
-        } else {
-            println!("Body: None");
-        }
-
-        if let Some(stream_body) = context.response.stream_body.get() {
-            if let Some(_) = stream_body.as_ref() {
-                println!("Stream Body: Stream<Vec<u8>>");
-            } else {
-                println!("Stream Body: None");
-            }
-        }
-
-        println!("\n=== Plugin Config ===");
-
-        println!("Config: {:?}", config);
-
-        println!("\n=== End Context ===");
-
+        // 尝试从 context 中获取更多信息
+        println!("\n--- Context 信息 ---");
+        println!("请求 ID: {:?}", ctx.request_id());
+        println!("上下文：{:?}", ctx);
+        
+        println!("============================\n");
         Ok(Default::default())
     }
 }
