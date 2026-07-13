@@ -1,87 +1,116 @@
-use aiway_plugin::protocol::context::http::request;
-use aiway_plugin::protocol::context::{HttpContext, RequestExt};
-use aiway_plugin::serde_json::{Value, json};
+use aiway_plugin::http::{request, response};
+use aiway_plugin::protocol::context::HttpContext;
+use aiway_plugin::serde_json::{Value, json, from_value};
 use aiway_plugin::{
-    Plugin, PluginError, PluginInfo, Version, async_trait, export, plugin_version, serde_json,
+    Plugin, PluginError, PluginInfo, Version, async_trait, export_wasm,
 };
 use regex::Regex;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
-use std::sync::{LazyLock, Mutex};
+use std::sync::RwLock;
 
 /// 路径重写插件
-pub struct RewritePathPlugin;
+pub struct RewritePathPlugin {
+    cached_pattern: RwLock<String>,
+    cached_regex: RwLock<Option<Regex>>,
+}
 
 impl RewritePathPlugin {
     pub fn new() -> Self {
-        Self {}
+        Self {
+            cached_pattern: RwLock::new(String::new()),
+            cached_regex: RwLock::new(None),
+        }
+    }
+
+    fn get_regex(&self, pattern: &str) -> Result<Regex, PluginError> {
+        // 先读锁检查缓存
+        {
+            let cached_pattern = self.cached_pattern.read().unwrap();
+            if *cached_pattern == pattern {
+                return Ok(self.cached_regex.read().unwrap().as_ref().unwrap().clone());
+            }
+        }
+        // 缓存未命中，写锁更新
+        let new_regex = Regex::new(pattern).map_err(|e| {
+            PluginError::ExecuteError(format!("Invalid regex pattern '{}': {}", pattern, e))
+        })?;
+        *self.cached_pattern.write().unwrap() = pattern.to_string();
+        *self.cached_regex.write().unwrap() = Some(new_regex.clone());
+        Ok(new_regex)
     }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RewriteRule {
-    /// 匹配模式（正则），例如：/api/*
+    /// 匹配模式（正则），例如：/api/v1/(.*)
     pub pattern: String,
-    /// 替换字符串，如：/$1
+    /// 替换字符串，如：/api/v2/$1
     pub replacement: String,
 }
 
-static REGEX_CACHE: LazyLock<Mutex<HashMap<String, Regex>>> =
-    LazyLock::new(|| Mutex::new(HashMap::new()));
-
 #[async_trait]
 impl Plugin for RewritePathPlugin {
-    fn name(&self) -> &'static str {
+    fn name(&self) -> &str {
         "rewrite-path"
     }
 
     fn info(&self) -> PluginInfo {
         PluginInfo {
-            version: plugin_version!(),
+            version: Version::new(0, 1, 0),
             default_config: json!({
-                "pattern": "/api/*",
+                "pattern": "/api/(.*)",
                 "replacement": "/$1"
             }),
-            description: "Rewrite path plugin".to_string(),
+            description: "路径重写插件".to_string(),
         }
     }
 
-    // 实现插件逻辑
     async fn on_request(
         &self,
         config: &Value,
         head: &mut request::Parts,
-        _: &mut HttpContext,
+        _ctx: &mut HttpContext,
     ) -> Result<(), PluginError> {
-        let rule: RewriteRule = serde_json::from_value(config.clone()).map_err(|e| {
-            PluginError::ExecuteError(format!("Failed to parse rewrite rules: {}", e))
+        let rule: RewriteRule = from_value(config.clone()).map_err(|e| {
+            PluginError::ExecuteError(format!("Failed to parse config: {}", e))
         })?;
 
-        let path = head.get_path();
+        let regex = self.get_regex(&rule.pattern)?;
+        let original_path = head.uri.path();
 
-        let regex = {
-            let mut cache = REGEX_CACHE.lock().unwrap();
-            if let Some(cached_regex) = cache.get(&rule.pattern) {
-                cached_regex.clone()
-            } else {
-                let new_regex = Regex::new(&rule.pattern).map_err(|e| {
-                    PluginError::ExecuteError(format!("Failed to parse rewrite rules: {}", e))
-                })?;
-                cache.insert(rule.pattern.clone(), new_regex.clone());
-                new_regex
-            }
+        // 快速路径：不匹配则跳过
+        if !regex.is_match(original_path) {
+            return Ok(());
+        }
+
+        let rewritten = regex.replace(original_path, &rule.replacement);
+
+        // 重建 path_and_query
+        let new_pq = match head.uri.query() {
+            Some(q) => format!("{}?{}", rewritten, q),
+            None => rewritten.into_owned(),
         };
 
-        let rewritten_path = if regex.is_match(&path) {
-            regex.replace_all(&path, &rule.replacement).to_string()
-        } else {
-            path
-        };
+        let mut parts = head.uri.clone().into_parts();
+        parts.path_and_query = Some(new_pq.parse().map_err(|e| {
+            PluginError::ExecuteError(format!("Invalid path: {}", e))
+        })?);
+        head.uri = http::Uri::from_parts(parts).map_err(|e| {
+            PluginError::ExecuteError(format!("URI rebuild failed: {}", e))
+        })?;
 
-        head.set_path(&rewritten_path);
-        Ok(Default::default())
+        Ok(())
+    }
+
+    async fn on_response(
+        &self,
+        _config: &Value,
+        _head: &mut response::Parts,
+        _ctx: &mut HttpContext,
+    ) -> Result<(), PluginError> {
+        Ok(())
     }
 }
 
-// 导出插件
-export!(RewritePathPlugin);
+// 导出 WASM 插件
+export_wasm!(RewritePathPlugin);

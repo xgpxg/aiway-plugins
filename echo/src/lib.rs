@@ -1,8 +1,8 @@
-use aiway_plugin::protocol::context::http::{request, response};
+use aiway_plugin::http::{request, response};
 use aiway_plugin::protocol::context::HttpContext;
 use aiway_plugin::serde_json::Value;
 use aiway_plugin::{
-    Plugin, PluginError, PluginInfo, Version, async_trait, export, plugin_version,
+    Plugin, PluginError, PluginInfo, Version, async_trait, export_wasm,
 };
 
 /// Echo插件
@@ -18,13 +18,13 @@ impl EchoPlugin {
 
 #[async_trait]
 impl Plugin for EchoPlugin {
-    fn name(&self) -> &'static str {
+    fn name(&self) -> &str {
         "Echo"
     }
 
     fn info(&self) -> PluginInfo {
         PluginInfo {
-            version: plugin_version!(),
+            version: Version::new(0, 1, 0),
             default_config: Default::default(),
             description: "原样输出参数，无实际功能".to_string(),
         }
@@ -82,5 +82,5 @@ impl Plugin for EchoPlugin {
     }
 }
 
-// 导出插件
-export!(EchoPlugin);
+// 导出 WASM 插件
+export_wasm!(EchoPlugin);
