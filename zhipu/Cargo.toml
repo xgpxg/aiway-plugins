@@ -1,15 +1,15 @@
 [package]
-name = "zhipu-mi"
-version = "0.1.0"
+name = "zhipu"
+version = "0.1.1"
 edition = "2024"
 
 [dependencies]
-aiway-plugin = { version = "0.1.2", features = ["model"] }
+aiway-plugin = { version = "0.2.1", features = ["model"] }
 base64 = "0.22"
 reqwest = { version = "0.13", default-features = false, features = ["multipart", "blocking"] }
 uuid = { version = "1", features = ["v4"] }
 
 [lib]
-name = "zhipu_mi"
+name = "zhipu"
 crate-type = ["cdylib"]
 path = "src/lib.rs"
