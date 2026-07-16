@@ -1,37 +1,44 @@
+use aiway_plugin::protocol::context::http::{self, HeaderName, HeaderValue};
 use aiway_plugin::protocol::context::HttpContext;
-use aiway_plugin::serde_json::{Value, json};
+use aiway_plugin::serde_json::{json, Value};
 use aiway_plugin::{
-    Plugin, PluginError, PluginInfo, Version, async_trait, export, plugin_version, serde_json,
+    async_trait, export, plugin_version, serde_json, Bytes, Plugin, PluginError, PluginInfo,
+    Version,
 };
 use base64::Engine;
 use base64::engine::general_purpose::STANDARD;
 
-/// 智谱AI模型输入适配插件
-pub struct ZhiPuMI;
+/// 智谱AI模型适配插件
+pub struct ZhiPuPlugin;
 
-impl ZhiPuMI {
+impl ZhiPuPlugin {
     pub fn new() -> Self {
         Self {}
     }
 }
 
 #[async_trait]
-impl Plugin for ZhiPuMI {
+impl Plugin for ZhiPuPlugin {
     fn name(&self) -> &'static str {
-        "zhipu-mi"
+        "zhipu"
     }
 
     fn info(&self) -> PluginInfo {
         PluginInfo {
             version: plugin_version!(),
             default_config: Default::default(),
-            description: "智谱AI模型输入适配".to_string(),
+            description: "智谱AI模型适配（请求/响应转换）".to_string(),
         }
     }
 
-    // 实现插件逻辑
-    async fn execute(&self, context: &HttpContext, _config: &Value) -> Result<Value, PluginError> {
-        let provider = context.inner_state.get_model_provider();
+    // ========== 请求体处理（原 mi） ==========
+    async fn on_request_body(
+        &self,
+        _config: &Value,
+        body: &mut Option<Bytes>,
+        ctx: &mut HttpContext,
+    ) -> Result<(), PluginError> {
+        let provider = ctx.get_proxy_model_provider();
 
         if provider.is_none() {
             return Err(PluginError::ExecuteError(
@@ -40,15 +47,17 @@ impl Plugin for ZhiPuMI {
         }
         let provider = provider.unwrap();
 
-        let body = serde_json::from_slice::<Value>(context.request.get_body().unwrap())
+        let body_val = serde_json::from_slice::<Value>(body.as_ref().unwrap())
             .map_err(|e| PluginError::ExecuteError(e.to_string()))?;
 
         match provider.api_url.as_str() {
             // 音色克隆
             p if p.ends_with("/voice/clone") => {
-                let voice = body["voice"].as_str().ok_or(PluginError::ExecuteError(
-                    "voice field is not found".to_string(),
-                ))?;
+                let voice = body_val["voice"]
+                    .as_str()
+                    .ok_or(PluginError::ExecuteError(
+                        "voice field is not found".to_string(),
+                    ))?;
 
                 // 上传文件得到文件ID
                 let file_id = self.upload_file(
@@ -59,46 +68,112 @@ impl Plugin for ZhiPuMI {
                         .map_err(|e| PluginError::ExecuteError(e.to_string()))?,
                 )?;
 
-                let model = body["model"].as_str().ok_or(PluginError::ExecuteError(
-                    "model field is not found".to_string(),
-                ))?;
-                let input = body["input"].as_str().ok_or(PluginError::ExecuteError(
-                    "input field is not found".to_string(),
-                ))?;
+                let model = body_val["model"]
+                    .as_str()
+                    .ok_or(PluginError::ExecuteError(
+                        "model field is not found".to_string(),
+                    ))?;
+                let input = body_val["input"]
+                    .as_str()
+                    .ok_or(PluginError::ExecuteError(
+                        "input field is not found".to_string(),
+                    ))?;
                 let result = json!({
                     "model": model,
                     "voice_name": uuid::Uuid::new_v4().to_string(),
                     "input": input,
                     "file_id": file_id,
                 });
-                context.request.set_body(
+                *body = Some(
                     serde_json::to_vec(&result)
                         .map_err(|e| PluginError::ExecuteError(e.to_string()))?
                         .into(),
                 )
             }
-            _ => context.request.set_body(
-                serde_json::to_vec(&body)
-                    .map_err(|e| PluginError::ExecuteError(e.to_string()))?
-                    .into(),
-            ),
+            _ => {
+                *body = Some(
+                    serde_json::to_vec(&body_val)
+                        .map_err(|e| PluginError::ExecuteError(e.to_string()))?
+                        .into(),
+                )
+            }
         }
 
-        Ok(Default::default())
+        Ok(())
+    }
+
+    // ========== 响应头处理（原 mo） ==========
+    async fn on_response(
+        &self,
+        _config: &Value,
+        head: &mut http::response::Parts,
+        ctx: &mut HttpContext,
+    ) -> Result<(), PluginError> {
+        if let Some(provider) = ctx.get_proxy_model_provider() {
+            if !provider.api_url.is_empty() {
+                head.headers.insert(
+                    HeaderName::from_static("content-type"),
+                    HeaderValue::from_static("audio/wav"),
+                );
+            }
+        }
+        Ok(())
+    }
+
+    // ========== 响应体处理（原 mo） ==========
+    fn on_response_body(
+        &self,
+        _config: &Value,
+        body: &mut Option<Bytes>,
+        ctx: &mut HttpContext,
+    ) -> Result<(), PluginError> {
+        let provider = ctx.get_proxy_model_provider();
+
+        if provider.is_none() {
+            return Err(PluginError::ExecuteError(
+                "provider is not found".to_string(),
+            ));
+        }
+        let provider = provider.unwrap();
+
+        let body_val = &serde_json::from_slice::<Value>(body.as_ref().unwrap())
+            .map_err(|e| PluginError::ExecuteError(e.to_string()))?;
+
+        match provider.api_url.as_str() {
+            // 音色克隆
+            p if !p.is_empty() => {
+                let file_id = body_val["file_id"]
+                    .as_str()
+                    .ok_or(PluginError::ExecuteError(
+                        "file_id field is not found".to_string(),
+                    ))?;
+
+                let bytes = self.download_file(
+                    file_id,
+                    &provider
+                        .api_key
+                        .ok_or("api_key is not found")
+                        .map_err(|e| PluginError::ExecuteError(e.to_string()))?,
+                )?;
+
+                *body = Some(bytes.into());
+            }
+            _ => {}
+        }
+
+        Ok(())
     }
 }
-impl ZhiPuMI {
+impl ZhiPuPlugin {
     const UPLOAD_FILE_URL: &'static str = "https://open.bigmodel.cn/api/paas/v4/files";
+    const DOWNLOAD_FILE_URL: &'static str =
+        "https://open.bigmodel.cn/api/paas/v4/files/<file_id>/content";
 
-    ///  上传文件
-    /// - file：可能是网络地址或base64编码格式
-    /// - api_key：智谱AI的API密钥
+    /// 上传文件
     fn upload_file(&self, file: &str, api_key: &str) -> Result<String, PluginError> {
         let client = reqwest::blocking::Client::new();
 
-        // 判断文件是URL还是base64编码
         let form_data = if file.starts_with("http://") || file.starts_with("https://") {
-            // 如果是URL，则下载文件内容
             let file_response = client.get(file).send().map_err(|e| {
                 PluginError::ExecuteError(format!("Failed to download file: {}", e))
             })?;
@@ -117,7 +192,6 @@ impl ZhiPuMI {
             );
             form
         } else {
-            // 如果是base64编码，先解码
             let decoded_bytes = STANDARD.decode(&file).map_err(|e| {
                 PluginError::ExecuteError(format!("Failed to decode base64: {}", e))
             })?;
@@ -133,10 +207,8 @@ impl ZhiPuMI {
             form
         };
 
-        // 添加其他必需的字段
         let form_data = form_data.text("purpose", "voice-clone-input");
 
-        // 发送请求
         let response = client
             .post(Self::UPLOAD_FILE_URL)
             .header("Authorization", format!("Bearer {}", api_key))
@@ -158,7 +230,6 @@ impl ZhiPuMI {
 
         println!("Upload successful: {}", response_text);
 
-        // 解析响应获取文件ID
         let response_json: Value = serde_json::from_str(&response_text).map_err(|e| {
             PluginError::ExecuteError(format!("Failed to parse response JSON: {}", e))
         })?;
@@ -172,6 +243,24 @@ impl ZhiPuMI {
 
         Ok(file_id)
     }
+
+    fn download_file(&self, file_id: &str, api_key: &str) -> Result<Vec<u8>, PluginError> {
+        let url = Self::DOWNLOAD_FILE_URL.replace("<file_id>", file_id);
+
+        let client = reqwest::blocking::Client::new();
+
+        let response = client
+            .get(&url)
+            .header("Authorization", format!("Bearer {}", api_key))
+            .send()
+            .map_err(|e| PluginError::ExecuteError(e.to_string()))?;
+
+        let bytes = response
+            .bytes()
+            .map_err(|e| PluginError::ExecuteError(e.to_string()))?;
+
+        Ok(bytes.to_vec())
+    }
 }
 // 导出插件
-export!(ZhiPuMI);
+export!(ZhiPuPlugin);

@@ -4,13 +4,10 @@ members = [
     "demo",
     "echo",
     "rewrite-path",
-    "aha-mi",
-    "aha-mo",
+    "aha",
     "sensitive-word-filter",
     "bailian",
     "header-operator",
-    "volcengine-mi",
-    "volcengine-mo",
-    "zhipu-mi",
-    "zhipu-mo"
+    "volcengine",
+    "zhipu"
 ]

@@ -1,5 +1,5 @@
 [package]
-name = "bailian"
+name = "volcengine"
 version = "0.1.1"
 edition = "2024"
 
@@ -7,6 +7,6 @@ edition = "2024"
 aiway-plugin = { version = "0.2.1", features = ["model"] }
 
 [lib]
-name = "bailian"
+name = "volcengine"
 crate-type = ["cdylib"]
 path = "src/lib.rs"
