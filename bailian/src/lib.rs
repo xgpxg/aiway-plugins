@@ -1,8 +1,8 @@
-use aiway_plugin::protocol::context::HttpContext;
+use aiway_plugin::protocol::context::PluginContext;
 use aiway_plugin::serde_json::{json, Value};
 use aiway_plugin::Version;
 use aiway_plugin::{
-    async_trait, export, plugin_version, serde_json, Bytes, Plugin, PluginError, PluginInfo,
+    async_trait, export_wasm, serde_json, Bytes, Plugin, PluginError, PluginInfo,
 };
 
 pub struct BaiLianModelWrapper;
@@ -15,13 +15,13 @@ impl BaiLianModelWrapper {
 
 #[async_trait]
 impl Plugin for BaiLianModelWrapper {
-    fn name(&self) -> &'static str {
+    fn name(&self) -> &str {
         "BaiLian"
     }
 
     fn info(&self) -> PluginInfo {
         PluginInfo {
-            version: plugin_version!(),
+            version: Version::new(0, 1, 0),
             default_config: Default::default(),
             description: "阿里百炼平台模型接口请求适配".to_string(),
         }
@@ -31,9 +31,9 @@ impl Plugin for BaiLianModelWrapper {
         &self,
         _config: &Value,
         body: &mut Option<Bytes>,
-        ctx: &mut HttpContext,
+        ctx: &mut dyn PluginContext,
     ) -> Result<(), PluginError> {
-        let provider = ctx.get_proxy_model_provider();
+        let provider = ctx.get_model_provider();
 
         if provider.is_none() {
             return Err(PluginError::ExecuteError(
@@ -84,5 +84,5 @@ impl Plugin for BaiLianModelWrapper {
     }
 }
 
-// 导出插件
-export!(BaiLianModelWrapper);
+// 导出 WASM 插件
+export_wasm!(BaiLianModelWrapper);

@@ -1,7 +1,9 @@
-use aiway_plugin::protocol::context::http::{request, response, HeaderName, HeaderValue};
-use aiway_plugin::protocol::context::HttpContext;
-use aiway_plugin::serde_json::Value;
-use aiway_plugin::{async_trait, export, plugin_version, Plugin, PluginError, PluginInfo, Version};
+use aiway_plugin::http::{request, response, HeaderName, HeaderValue};
+use aiway_plugin::protocol::context::PluginContext;
+use aiway_plugin::serde_json::{self, Value};
+use aiway_plugin::{
+    async_trait, export_wasm, Plugin, PluginError, PluginInfo, Version,
+};
 use serde::{Deserialize, Serialize};
 
 /// Header操作插件
@@ -59,13 +61,13 @@ impl Default for HeaderConfig {
 
 #[async_trait]
 impl Plugin for HeaderOperatorPlugin {
-    fn name(&self) -> &'static str {
+    fn name(&self) -> &str {
         "header-operator"
     }
 
     fn info(&self) -> PluginInfo {
         PluginInfo {
-            version: plugin_version!(),
+            version: Version::new(0, 1, 0),
             default_config: serde_json::to_value(HeaderConfig::default()).unwrap_or_default(),
             description: "新增或移除 HTTP 头".to_string(),
         }
@@ -75,7 +77,7 @@ impl Plugin for HeaderOperatorPlugin {
         &self,
         config: &Value,
         head: &mut request::Parts,
-        _ctx: &mut HttpContext,
+        _ctx: &mut dyn PluginContext,
     ) -> Result<(), PluginError> {
         // 解析配置
         let header_config: HeaderConfig = serde_json::from_value(config.clone()).map_err(|e| {
@@ -105,7 +107,7 @@ impl Plugin for HeaderOperatorPlugin {
         &self,
         config: &Value,
         head: &mut response::Parts,
-        _ctx: &mut HttpContext,
+        _ctx: &mut dyn PluginContext,
     ) -> Result<(), PluginError> {
         // 解析配置
         let header_config: HeaderConfig = serde_json::from_value(config.clone()).map_err(|e| {
@@ -132,5 +134,5 @@ impl Plugin for HeaderOperatorPlugin {
     }
 }
 
-// 导出插件
-export!(HeaderOperatorPlugin);
+// 导出 WASM 插件
+export_wasm!(HeaderOperatorPlugin);

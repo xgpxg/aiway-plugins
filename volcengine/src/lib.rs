@@ -1,8 +1,8 @@
-use aiway_plugin::protocol::context::http::response;
-use aiway_plugin::protocol::context::HttpContext;
+use aiway_plugin::http::response;
+use aiway_plugin::protocol::context::PluginContext;
 use aiway_plugin::serde_json::Value;
 use aiway_plugin::{
-    async_trait, export, plugin_version, Bytes, Plugin, PluginError, PluginInfo, Version,
+    async_trait, export_wasm, Bytes, Plugin, PluginError, PluginInfo, Version,
 };
 
 /// Volcengine 模型适配插件
@@ -16,13 +16,13 @@ impl VolcenginePlugin {
 
 #[async_trait]
 impl Plugin for VolcenginePlugin {
-    fn name(&self) -> &'static str {
+    fn name(&self) -> &str {
         "volcengine"
     }
 
     fn info(&self) -> PluginInfo {
         PluginInfo {
-            version: plugin_version!(),
+            version: Version::new(0, 1, 0),
             default_config: Default::default(),
             description: "Volcengine 模型适配（请求/响应转换）".to_string(),
         }
@@ -32,7 +32,7 @@ impl Plugin for VolcenginePlugin {
         &self,
         _config: &Value,
         _body: &mut Option<Bytes>,
-        _ctx: &mut HttpContext,
+        _ctx: &mut dyn PluginContext,
     ) -> Result<(), PluginError> {
         Ok(())
     }
@@ -41,7 +41,7 @@ impl Plugin for VolcenginePlugin {
         &self,
         _config: &Value,
         _head: &mut response::Parts,
-        _ctx: &mut HttpContext,
+        _ctx: &mut dyn PluginContext,
     ) -> Result<(), PluginError> {
         Ok(())
     }
@@ -50,11 +50,11 @@ impl Plugin for VolcenginePlugin {
         &self,
         _config: &Value,
         _body: &mut Option<Bytes>,
-        _ctx: &mut HttpContext,
+        _ctx: &mut dyn PluginContext,
     ) -> Result<(), PluginError> {
         Ok(())
     }
 }
 
-// 导出插件
-export!(VolcenginePlugin);
+// 导出 WASM 插件
+export_wasm!(VolcenginePlugin);

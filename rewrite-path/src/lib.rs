@@ -1,5 +1,5 @@
 use aiway_plugin::http::{request, response};
-use aiway_plugin::protocol::context::HttpContext;
+use aiway_plugin::protocol::context::PluginContext;
 use aiway_plugin::serde_json::{Value, json, from_value};
 use aiway_plugin::{
     Plugin, PluginError, PluginInfo, Version, async_trait, export_wasm,
@@ -69,7 +69,7 @@ impl Plugin for RewritePathPlugin {
         &self,
         config: &Value,
         head: &mut request::Parts,
-        _ctx: &mut HttpContext,
+        _ctx: &mut dyn PluginContext,
     ) -> Result<(), PluginError> {
         let rule: RewriteRule = from_value(config.clone()).map_err(|e| {
             PluginError::ExecuteError(format!("Failed to parse config: {}", e))
@@ -106,7 +106,7 @@ impl Plugin for RewritePathPlugin {
         &self,
         _config: &Value,
         _head: &mut response::Parts,
-        _ctx: &mut HttpContext,
+        _ctx: &mut dyn PluginContext,
     ) -> Result<(), PluginError> {
         Ok(())
     }

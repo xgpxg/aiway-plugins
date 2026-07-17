@@ -1,8 +1,8 @@
-use aiway_plugin::protocol::context::http::{response, HeaderName, HeaderValue};
-use aiway_plugin::protocol::context::HttpContext;
+use aiway_plugin::http::{response, HeaderName, HeaderValue};
+use aiway_plugin::protocol::context::PluginContext;
 use aiway_plugin::serde_json::{json, Value};
 use aiway_plugin::{
-    async_trait, export, plugin_version, serde_json, Bytes, Plugin, PluginError, PluginInfo,
+    async_trait, export_wasm, serde_json, Bytes, Plugin, PluginError, PluginInfo,
     Version,
 };
 use base64::Engine;
@@ -19,13 +19,13 @@ impl AhaPlugin {
 
 #[async_trait]
 impl Plugin for AhaPlugin {
-    fn name(&self) -> &'static str {
+    fn name(&self) -> &str {
         "aha"
     }
 
     fn info(&self) -> PluginInfo {
         PluginInfo {
-            version: plugin_version!(),
+            version: Version::new(0, 1, 0),
             default_config: Default::default(),
             description: "Aha 模型适配（请求/响应转换）".to_string(),
         }
@@ -36,7 +36,7 @@ impl Plugin for AhaPlugin {
         &self,
         _config: &Value,
         body: &mut Option<Bytes>,
-        _ctx: &mut HttpContext,
+        _ctx: &mut dyn PluginContext,
     ) -> Result<(), PluginError> {
         let body_val = &serde_json::from_slice::<Value>(body.as_ref().unwrap())
             .map_err(|e| PluginError::ExecuteError(e.to_string()))?;
@@ -134,9 +134,9 @@ impl Plugin for AhaPlugin {
         &self,
         _config: &Value,
         head: &mut response::Parts,
-        ctx: &mut HttpContext,
+        ctx: &mut dyn PluginContext,
     ) -> Result<(), PluginError> {
-        if let Some(model_name) = ctx.get_proxy_model_name() {
+        if let Some(model_name) = ctx.get_model_name() {
             if model_name.starts_with("voxcpm") {
                 head.headers.insert(
                     HeaderName::from_static("content-type"),
@@ -152,9 +152,9 @@ impl Plugin for AhaPlugin {
         &self,
         _config: &Value,
         body: &mut Option<Bytes>,
-        ctx: &mut HttpContext,
+        ctx: &mut dyn PluginContext,
     ) -> Result<(), PluginError> {
-        let model_name = if let Some(name) = ctx.get_proxy_model_name() {
+        let model_name = if let Some(name) = ctx.get_model_name() {
             name
         } else {
             return Ok(());
@@ -205,5 +205,5 @@ impl Plugin for AhaPlugin {
     }
 }
 
-// 导出插件
-export!(AhaPlugin);
+// 导出 WASM 插件
+export_wasm!(AhaPlugin);

@@ -4,9 +4,9 @@ version = "0.1.1"
 edition = "2024"
 
 [dependencies]
-aiway-plugin = "0.2.1"
+aiway-plugin = { path = "../../aiway/lib/aiway-plugin", version = "0.3.0" }
+http = "1"
+bincode = "1.3"
 
 [lib]
-name = "demo"
 crate-type = ["cdylib"]
-path = "src/lib.rs"

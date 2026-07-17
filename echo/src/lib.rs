@@ -1,5 +1,5 @@
 use aiway_plugin::http::{request, response};
-use aiway_plugin::protocol::context::HttpContext;
+use aiway_plugin::protocol::context::PluginContext;
 use aiway_plugin::serde_json::Value;
 use aiway_plugin::{
     Plugin, PluginError, PluginInfo, Version, async_trait, export_wasm,
@@ -35,50 +35,20 @@ impl Plugin for EchoPlugin {
         &self,
         _config: &Value,
         head: &mut request::Parts,
-        ctx: &mut HttpContext,
+        ctx: &mut dyn PluginContext,
     ) -> Result<(), PluginError> {
-        println!("========== 请求信息 ==========");
-        println!("URI: {}", head.uri);
-        println!("方法：{}", head.method);
-
-        // 打印请求头
-        println!("\n--- 请求头 ---");
-        for (key, value) in &head.headers {
-            println!("{}: {:?}", key, value);
-        }
-        
-        // 尝试从 context 中获取更多信息
-        println!("\n--- Context 信息 ---");
-        println!("请求 ID: {:?}", ctx.request_id());
-        println!("上下文：{:?}", ctx);
-        
-        println!("============================\n");
-        Ok(Default::default())
+        ctx.log_info(&format!("[{}] {} {}", ctx.request_id(), head.method, head.uri));
+        Ok(())
     }
 
     async fn on_response(
         &self,
         _config: &Value,
         head: &mut response::Parts,
-        ctx: &mut HttpContext,
+        ctx: &mut dyn PluginContext,
     ) -> Result<(), PluginError> {
-        println!("========== 响应信息 ==========");
-        println!("状态码：{}", head.status);
-        println!("版本：{:?}", head.version);
-        
-        // 打印响应头
-        println!("\n--- 响应头 ---");
-        for (key, value) in &head.headers {
-            println!("{}: {:?}", key, value);
-        }
-
-        // 尝试从 context 中获取更多信息
-        println!("\n--- Context 信息 ---");
-        println!("请求 ID: {:?}", ctx.request_id());
-        println!("上下文：{:?}", ctx);
-        
-        println!("============================\n");
-        Ok(Default::default())
+        ctx.log_info(&format!("[{}] {} {}", ctx.request_id(), head.status, head.status.as_u16()));
+        Ok(())
     }
 }
 

@@ -8,9 +8,5 @@ aiway-plugin = { path = "../../aiway/lib/aiway-plugin", version = "0.3.0" }
 http = "1"
 bincode = "1.3"
 
-
 [lib]
-name = "echo"
 crate-type = ["cdylib"]
-path = "src/lib.rs"
-

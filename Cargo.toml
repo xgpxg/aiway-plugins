@@ -2,6 +2,7 @@
 resolver = "3"
 members = [
     "demo",
+    "http-demo",
     "echo",
     "rewrite-path",
     "aha",
