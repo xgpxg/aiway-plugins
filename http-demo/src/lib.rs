@@ -1,7 +1,7 @@
-use aiway_plugin::HttpRequestBuilder;
 use aiway_plugin::PluginContext;
 use aiway_plugin::http::request;
 use aiway_plugin::serde_json::Value;
+use aiway_plugin::{HttpRequestBuilder, log_info};
 use aiway_plugin::{Plugin, PluginError, PluginInfo, Version, async_trait, export_wasm};
 
 // 示例插件
@@ -35,7 +35,7 @@ impl Plugin for DemoPlugin {
     ) -> Result<(), PluginError> {
         let request = HttpRequestBuilder::new("GET", "https://example.com").build();
         let resp = ctx.http_request(&request)?;
-        ctx.log_info(&format!("{}", resp.text()?));
+        log_info!(ctx, "{}", resp.text()?);
         Ok(())
     }
 }
