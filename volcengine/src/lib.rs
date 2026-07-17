@@ -1,5 +1,5 @@
 use aiway_plugin::http::response;
-use aiway_plugin::protocol::context::PluginContext;
+use aiway_plugin::PluginContext;
 use aiway_plugin::serde_json::Value;
 use aiway_plugin::{
     async_trait, export_wasm, Bytes, Plugin, PluginError, PluginInfo, Version,

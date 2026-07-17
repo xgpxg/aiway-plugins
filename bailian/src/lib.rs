@@ -1,4 +1,4 @@
-use aiway_plugin::protocol::context::PluginContext;
+use aiway_plugin::PluginContext;
 use aiway_plugin::serde_json::{json, Value};
 use aiway_plugin::Version;
 use aiway_plugin::{
