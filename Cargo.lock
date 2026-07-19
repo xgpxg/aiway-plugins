@@ -38,7 +38,7 @@ dependencies = [
 
 [[package]]
 name = "aiway-protocol"
-version = "0.2.4"
+version = "0.3.0"
 dependencies = [
  "bincode",
  "dashmap",
