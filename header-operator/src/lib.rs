@@ -70,6 +70,7 @@ impl Plugin for HeaderOperatorPlugin {
             version: Version::new(0, 1, 0),
             default_config: serde_json::to_value(HeaderConfig::default()).unwrap_or_default(),
             description: "新增或移除 HTTP 头".to_string(),
+            readme: None,
         }
     }
 

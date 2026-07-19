@@ -27,6 +27,7 @@ impl Plugin for EchoPlugin {
             version: Version::new(0, 1, 0),
             default_config: Default::default(),
             description: "原样输出参数，无实际功能".to_string(),
+            readme: None,
         }
     }
 

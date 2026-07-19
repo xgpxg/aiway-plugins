@@ -9,5 +9,6 @@ members = [
     "bailian",
     "header-operator",
     "volcengine",
-    "zhipu"
+    "zhipu",
+    "jwt-validator"
 ]

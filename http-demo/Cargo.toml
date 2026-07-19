@@ -1,10 +1,10 @@
 [package]
 name = "http-demo"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2024"
 
 [dependencies]
-aiway-plugin = { path = "../../aiway/lib/aiway-plugin", version = "0.3.0" }
+aiway-plugin = { path = "../../aiway/lib/aiway-plugin", version = "0.3.1" }
 http = "1"
 bincode = "1.3"
 

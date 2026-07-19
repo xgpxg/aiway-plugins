@@ -24,6 +24,7 @@ impl Plugin for BaiLianModelWrapper {
             version: Version::new(0, 1, 0),
             default_config: Default::default(),
             description: "阿里百炼平台模型接口请求适配".to_string(),
+            readme: None,
         }
     }
 

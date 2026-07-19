@@ -25,6 +25,7 @@ impl Plugin for VolcenginePlugin {
             version: Version::new(0, 1, 0),
             default_config: Default::default(),
             description: "Volcengine 模型适配（请求/响应转换）".to_string(),
+            readme: None,
         }
     }
 

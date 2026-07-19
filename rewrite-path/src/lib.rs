@@ -62,6 +62,7 @@ impl Plugin for RewritePathPlugin {
                 "replacement": "/$1"
             }),
             description: "路径重写插件".to_string(),
+            readme: None,
         }
     }
 

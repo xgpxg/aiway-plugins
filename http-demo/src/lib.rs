@@ -24,6 +24,7 @@ impl Plugin for DemoPlugin {
             version: Version::new(0, 1, 0),
             default_config: Default::default(),
             description: "Http Demo Plugin".to_string(),
+            readme: None,
         }
     }
 
