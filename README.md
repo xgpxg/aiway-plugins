@@ -15,7 +15,7 @@
 
 可参考 [示例插件](/demo) 实现自定义插件。
 
-[插件文档](https://aiway.coderbox.cn/doc.html?path=docs/plugins/introduction.md)
+[插件文档](https://xgpxg.github.io/aiway/plugins/overview.html)
 
 ## 编译插件
 
