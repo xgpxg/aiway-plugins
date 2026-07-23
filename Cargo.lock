@@ -23,7 +23,7 @@ dependencies = [
 
 [[package]]
 name = "aiway-plugin"
-version = "0.3.1"
+version = "0.3.2"
 dependencies = [
  "aiway-protocol",
  "async-trait",
@@ -38,7 +38,7 @@ dependencies = [
 
 [[package]]
 name = "aiway-protocol"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "bincode",
  "dashmap",
@@ -390,6 +390,16 @@ name = "r-efi"
 version = "6.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f8dcc9c7d52a811697d2151c701e0d08956f92b0e24136cf4cf27b57a6a0d9bf"
+
+[[package]]
+name = "rate-limiter"
+version = "0.1.0"
+dependencies = [
+ "aiway-plugin",
+ "bincode",
+ "http",
+ "serde",
+]
 
 [[package]]
 name = "redox_syscall"

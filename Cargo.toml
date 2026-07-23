@@ -10,5 +10,6 @@ members = [
     "header-operator",
     "volcengine",
     "zhipu",
-    "jwt-validator"
+    "jwt-validator",
+    "rate-limiter"
 ]
