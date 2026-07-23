@@ -8,8 +8,6 @@ version = "0.1.2"
 dependencies = [
  "aiway-plugin",
  "base64",
- "bincode",
- "http",
 ]
 
 [[package]]
@@ -23,7 +21,7 @@ dependencies = [
 
 [[package]]
 name = "aiway-plugin"
-version = "0.3.2"
+version = "0.3.3"
 dependencies = [
  "aiway-protocol",
  "async-trait",
@@ -65,8 +63,6 @@ name = "bailian"
 version = "0.1.2"
 dependencies = [
  "aiway-plugin",
- "bincode",
- "http",
 ]
 
 [[package]]
@@ -162,8 +158,6 @@ name = "demo"
 version = "0.1.2"
 dependencies = [
  "aiway-plugin",
- "bincode",
- "http",
 ]
 
 [[package]]
@@ -182,8 +176,6 @@ name = "echo"
 version = "0.1.2"
 dependencies = [
  "aiway-plugin",
- "bincode",
- "http",
 ]
 
 [[package]]
@@ -242,8 +234,6 @@ name = "header-operator"
 version = "0.1.2"
 dependencies = [
  "aiway-plugin",
- "bincode",
- "http",
  "serde",
 ]
 
@@ -271,8 +261,6 @@ name = "http-demo"
 version = "0.1.2"
 dependencies = [
  "aiway-plugin",
- "bincode",
- "http",
 ]
 
 [[package]]
@@ -308,9 +296,7 @@ version = "0.1.0"
 dependencies = [
  "aiway-plugin",
  "base64",
- "bincode",
  "hmac",
- "http",
  "serde",
  "sha2",
 ]
@@ -396,8 +382,6 @@ name = "rate-limiter"
 version = "0.1.0"
 dependencies = [
  "aiway-plugin",
- "bincode",
- "http",
  "serde",
 ]
 
@@ -444,8 +428,6 @@ name = "rewrite-path"
 version = "0.1.2"
 dependencies = [
  "aiway-plugin",
- "bincode",
- "http",
  "regex",
  "serde",
 ]
@@ -600,8 +582,6 @@ name = "volcengine"
 version = "0.1.2"
 dependencies = [
  "aiway-plugin",
- "bincode",
- "http",
 ]
 
 [[package]]
@@ -661,8 +641,6 @@ version = "0.1.2"
 dependencies = [
  "aiway-plugin",
  "base64",
- "bincode",
- "http",
  "uuid",
 ]
 

@@ -1,9 +1,7 @@
-use aiway_plugin::http::{request, response};
 use aiway_plugin::PluginContext;
-use aiway_plugin::serde_json::{Value, json, from_value};
-use aiway_plugin::{
-    Plugin, PluginError, PluginInfo, Version, async_trait, export_wasm,
-};
+use aiway_plugin::http::{self, request};
+use aiway_plugin::serde_json::{Value, from_value, json};
+use aiway_plugin::{Plugin, PluginError, PluginInfo, Version, async_trait, export_wasm};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::sync::RwLock;
@@ -72,9 +70,8 @@ impl Plugin for RewritePathPlugin {
         head: &mut request::Parts,
         _ctx: &mut dyn PluginContext,
     ) -> Result<(), PluginError> {
-        let rule: RewriteRule = from_value(config.clone()).map_err(|e| {
-            PluginError::ExecuteError(format!("Failed to parse config: {}", e))
-        })?;
+        let rule: RewriteRule = from_value(config.clone())
+            .map_err(|e| PluginError::ExecuteError(format!("Failed to parse config: {}", e)))?;
 
         let regex = self.get_regex(&rule.pattern)?;
         let original_path = head.uri.path();
@@ -93,17 +90,16 @@ impl Plugin for RewritePathPlugin {
         };
 
         let mut parts = head.uri.clone().into_parts();
-        parts.path_and_query = Some(new_pq.parse().map_err(|e| {
-            PluginError::ExecuteError(format!("Invalid path: {}", e))
-        })?);
-        head.uri = http::Uri::from_parts(parts).map_err(|e| {
-            PluginError::ExecuteError(format!("URI rebuild failed: {}", e))
-        })?;
+        parts.path_and_query = Some(
+            new_pq
+                .parse()
+                .map_err(|e| PluginError::ExecuteError(format!("Invalid path: {}", e)))?,
+        );
+        head.uri = http::Uri::from_parts(parts)
+            .map_err(|e| PluginError::ExecuteError(format!("URI rebuild failed: {}", e)))?;
 
         Ok(())
     }
-
-
 }
 
 // 导出 WASM 插件
