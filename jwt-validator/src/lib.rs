@@ -418,14 +418,7 @@ impl Plugin for JwtValidator {
         Ok(())
     }
 
-    async fn on_response(
-        &self,
-        _config: &Value,
-        _head: &mut response::Parts,
-        _ctx: &mut dyn PluginContext,
-    ) -> Result<(), PluginError> {
-        Ok(())
-    }
+
 }
 
 export_wasm!(JwtValidator);

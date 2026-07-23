@@ -38,23 +38,8 @@ impl Plugin for VolcenginePlugin {
         Ok(())
     }
 
-    async fn on_response(
-        &self,
-        _config: &Value,
-        _head: &mut response::Parts,
-        _ctx: &mut dyn PluginContext,
-    ) -> Result<(), PluginError> {
-        Ok(())
-    }
 
-    fn on_response_body(
-        &self,
-        _config: &Value,
-        _body: &mut Option<Bytes>,
-        _ctx: &mut dyn PluginContext,
-    ) -> Result<(), PluginError> {
-        Ok(())
-    }
+
 }
 
 // 导出 WASM 插件

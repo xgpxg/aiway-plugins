@@ -103,14 +103,7 @@ impl Plugin for RewritePathPlugin {
         Ok(())
     }
 
-    async fn on_response(
-        &self,
-        _config: &Value,
-        _head: &mut response::Parts,
-        _ctx: &mut dyn PluginContext,
-    ) -> Result<(), PluginError> {
-        Ok(())
-    }
+
 }
 
 // 导出 WASM 插件

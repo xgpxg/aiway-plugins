@@ -32,7 +32,7 @@ impl Plugin for AhaPlugin {
         }
     }
 
-    // ========== 请求体处理（原 mi） ==========
+    // ========== 请求体处理 ==========
     async fn on_request_body(
         &self,
         _config: &Value,
@@ -130,7 +130,7 @@ impl Plugin for AhaPlugin {
         Ok(())
     }
 
-    // ========== 响应头处理（原 mo） ==========
+    // ========== 响应头处理 ==========
     async fn on_response(
         &self,
         _config: &Value,
@@ -148,8 +148,8 @@ impl Plugin for AhaPlugin {
         Ok(())
     }
 
-    // ========== 响应体处理（原 mo） ==========
-    fn on_response_body(
+    // ========== 响应体处理 ==========
+    async fn on_response_body(
         &self,
         _config: &Value,
         body: &mut Option<Bytes>,
