@@ -10,7 +10,7 @@
 | **bailian**         | [下载](https://package-release.coderbox.cn/aiway/plugins/bailian/0.1.2/bailia.wasm)                  | 0.1.2 | 模型转换      | 阿里百炼平台模型接口请求适配（文生图）                                     |
 | **volcengine**      | [下载](https://package-release.coderbox.cn/aiway/plugins/volcengine/0.1.2/volcengine.wasm)           | 0.1.2 | 模型转换      | 火山引擎模型接口请求适配                                            |
 | **zhipu**           | [下载](https://package-release.coderbox.cn/aiway/plugins/zhipu/0.1.2/zhipu.wasm)                     | 0.1.2 | 模型转换      | 智谱 AI 模型输入适配（音色克隆、文件上传）                                 |
-| **rate-limiter**    | [下载](https://package-release.coderbox.cn/aiway/plugins/zhipu/0.1.2/rate-limiter.wasm)              | 0.1.0 | 通用        | 请求限流                                                    |
+| **rate-limiter**    | [下载](https://package-release.coderbox.cn/aiway/plugins/rate-limiter/0.1.0/rate_limiter.wasm)       | 0.1.0 | 通用        | 请求限流                                                    |
 
 ## 自定义插件
 
